@@ -1,4 +1,12 @@
 const server = require('./server');
 
 
-server.run({PORT:4200});
+
+if (module === require.main) {
+  // [START server]
+  // Start the server
+  server.run({PORT:process.env.PORT || 8080});
+  // [END server]
+}
+
+module.exports = server;
