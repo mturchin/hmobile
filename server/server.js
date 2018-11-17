@@ -9,7 +9,7 @@ const server = createServer(app);
 
 
 app.use('/', express.static(`${process.cwd()}/../public`));
-console.log(`${process.cwd()}/../build`)
+console.log(`${process.cwd()}/../build/index.html`)
 
 
 // [START hello_world]
