@@ -12,6 +12,11 @@ app.use('/', express.static(`${process.cwd()}/../public`));
 console.log(`${process.cwd()}/../public`)
 
 
+// [START hello_world]
+// Say hello!
+app.get('/test', (req, res) => {
+  res.status(200).send('Hello, world!');
+});
 
 module.exports.run = (config) => {
   server.listen(config.PORT);
