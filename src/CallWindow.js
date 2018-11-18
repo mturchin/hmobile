@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import _ from 'lodash';
+import { Button } from 'semantic-ui-react'
 
 class CallWindow extends Component {
   constructor(props) {
@@ -61,25 +62,29 @@ class CallWindow extends Component {
     });
 
     return this.btns.map(btn => (
-      <button
+      <Button
         key={`btn${btn.type}`}
         className={getClass(btn.icon, btn.type)}
         onClick={() => this.toggleMediaDevice(btn.type)}
-      />
+      >
+      {btn.type}
+      </Button>
     ));
   }
   render() {
     const { status } = this.props;
     return (
       <div className={classnames('call-window', status)}>
-        <video id="peerVideo" ref={el => this.peerVideo = el} autoPlay />
-        <video id="localVideo" ref={el => this.localVideo = el} autoPlay muted />
+        <video id="peerVideo" ref={el => this.peerVideo = el} autoPlay  className='video_Main'/>
+        <video id="localVideo" ref={el => this.localVideo = el} autoPlay muted  className='video_Main'/>
         <div className="video-control">
           {this.renderControlButtons()}
-          <button
+          <Button
             className="btn-action hangup fa fa-phone"
             onClick={() => this.props.endCall(true)}
-          />
+          >
+          EndCall
+          </Button>
         </div>
       </div>
     );

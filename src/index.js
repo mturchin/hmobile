@@ -7,6 +7,7 @@ import App from './App';
 import Preview from './Preview';
 import Test from './Test';
 
+import 'semantic-ui-css/semantic.min.css';
 
 const routing = (
   <Router>

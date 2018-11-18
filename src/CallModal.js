@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
+import { Button, Icon } from 'semantic-ui-react'
 
 class CallModal extends Component {
   acceptWithVideo(video) {
@@ -13,18 +14,33 @@ class CallModal extends Component {
         <p>
           <span className="caller">{this.props.callFrom}</span> is calling ...
         </p>
-        <button
+        <Button
           className="btn-action fa fa-video-camera"
           onClick={this.acceptWithVideo(true)}
-        />
-        <button
+        >
+        Accept Call
+          <span className="btn_span"></span>
+          <Icon name='microphone' />
+          <Icon name='camera' />
+        </Button>
+        <Button
+          basic color='green'
           className="btn-action fa fa-phone"
           onClick={this.acceptWithVideo(false)}
-        />
-        <button
+          >
+          Accept Call
+          <span className="btn_span"></span>
+          <Icon name='microphone' />
+        </Button>
+
+        <Button
+          basic color='violet'
           className="btn-action hangup fa fa-phone"
           onClick={this.props.rejectCall}
-        />
+          >
+          Reject Call
+        </Button>
+
       </div>
     );
   }

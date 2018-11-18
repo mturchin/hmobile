@@ -1,8 +1,32 @@
 .App {
   text-align: center;
+  height: 100vh;
 }
 
+.chat_history {
+  height: calc(100vh - 200px);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
 
+.message_me {
+  color: green;
+  align-self: flex-start;
+}
+
+.message_other {
+  color: red;
+  align-self: flex-end;
+}
+
+.video_Main {
+  width: 100%;
+}
+
+.btn_span {
+  padding-right: 5px;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
