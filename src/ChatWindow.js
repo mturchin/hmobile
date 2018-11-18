@@ -43,8 +43,7 @@ class ChatWindow extends Component {
         </div>
         <div>
           <Input type='text' placeholder='...' action>
-            <input onChange={this.props.onMessageChange}/>
-
+            <input onChange={this.props.onMessageChange} value={this.props.message}/>
             <Button color='facebook' type='submit'  onClick={this.props.onSubmit}>
             <Icon name='rocketchat' />
 

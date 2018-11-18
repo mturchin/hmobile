@@ -23,7 +23,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      message:'here',
+      message: '',
       messages: [],
       clientId: '',
       callWindow: '',
@@ -121,6 +121,8 @@ class App extends Component {
       sendBy: this.state.clientId,
       timestamp: new Date(),
     })
+
+    this.setState({message: ''})
   }
 
 
@@ -271,11 +273,12 @@ class App extends Component {
             </Grid.Column>
             <Grid.Column tablet={5} computer={5}  mobile={16}>
             <ChatWindow
-            clientId={this.state.clientId}
-            messages={this.state.messages}
-            onMessageChange={this.onMessageChange}
-            onSubmit={this.onSubmit}
-            fileEvent={this.fileEvent}
+              clientId={this.state.clientId}
+              message={this.state.message}
+              messages={this.state.messages}
+              onMessageChange={this.onMessageChange}
+              onSubmit={this.onSubmit}
+              fileEvent={this.fileEvent}
             />
             </Grid.Column>
           </Grid.Row>
