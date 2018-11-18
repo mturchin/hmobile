@@ -225,7 +225,7 @@ class App extends Component {
 
 
                 {isPatient &&<Card.Content>
-                    {this.state.chargeDollar > 0 && <p> $ {this.state.chargeDollar}</p>}
+                    {this.state.chargeDollar > 0 && <p> HMO {this.state.chargeDollar}</p>}
                     {this.state.qrCodePayment && <QRCode value={this.state.qrCodePayment} />}
 
                     {!this.state.qrCodePayment &&<Button icon labelPosition='left'  color='green' onClick={this.onSubmitPay}>

@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
 import { Input, Button, Icon } from 'semantic-ui-react'
 
-let friendID = 'physician';
 
 class MainWindow extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      friendID: 'physician-'
+    };
 
+  }
   callWithVideo(video) {
     const config = { audio: true };
     config.video = video;
-    return () => this.props.startCall(true, friendID, config);
+    return () => this.props.startCall(true, this.state.friendID, config);
   }
   render() {
     const { clientId } = this.props;
@@ -20,8 +25,8 @@ class MainWindow extends Component {
         </div>
         <div className='callAction_btn'>
           <Input placeholder='Who are you looking for'
-          value={friendID}
-          onChange={event => friendID = event.target.value}
+          value={ this.state.friendID}
+          onChange={event => this.setState({friendID: event.target.value})}
           />
 
           <div>
