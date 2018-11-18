@@ -19,10 +19,10 @@ class ChatWindow extends Component {
       return x.message.indexOf('data:image')=== 0?
         <Image src={x.message}/>
         :<Message
-          color={x.sendBy === this.props.clientId? 'green':'purple' }>
+          color={x.sendBy === this.props.clientId? 'green':'orange' }>
 
           { (x.message.indexOf('octet-stream') > -1 || x.message.indexOf('data:application') > -1 )?
-          <a href={x.message} target="_blank" download={x.filename}><Icon name='download' />Download {x.filename}</a>
+          <a href={x.message} target="_blank" download={x.filename}><Icon name='download' /> {x.filename}</a>
           :x.message}
         </Message>
     }
@@ -36,7 +36,7 @@ class ChatWindow extends Component {
             {
               processingMessage(x)
             }
-            <span>{moment(x.timestamp).fromNow()}</span>
+            <span color='grey'>{moment(x.timestamp).fromNow()}</span>
             </div>
           })
           }
