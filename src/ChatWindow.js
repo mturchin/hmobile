@@ -42,6 +42,18 @@ class ChatWindow extends Component {
           </Button>
 
           </Input>
+          <div className="ui middle aligned aligned grid container upload_files">
+            <div className="ui fluid segment">
+            <input type="file" onChange={this.fileEvent} className="inputfile" id="embedpollfileinput" />
+
+            <label for="embedpollfileinput" className="ui green right floated button">
+              <i className="ui upload icon"></i>
+              Upload image
+            </label>
+
+            </div>
+
+          </div>
         </div>
       </div>
 

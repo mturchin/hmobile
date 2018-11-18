@@ -177,7 +177,7 @@ class App extends Component {
                <Card.Content header='About you' />
                <Card.Content>
                 You're a
-                <Label as='a'>{this.state.clientId}</Label>
+                <Label as='a' className='txt_label'>{this.state.clientId}</Label>
 
                </Card.Content>
                <Card.Content extra>

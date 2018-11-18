@@ -17,9 +17,8 @@ class MainWindow extends Component {
       <div className="container main-window">
         <div>
 
-          <h4>Get started by calling a friend below</h4>
         </div>
-        <div>
+        <div className='callAction_btn'>
           <Input placeholder='Who are you looking for'
           value={friendID}
           onChange={event => friendID = event.target.value}
