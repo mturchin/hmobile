@@ -10,8 +10,12 @@ var cors = require('cors')
 
 app.use(cors())
 
+app.use(express.static(__dirname + '/../build'));
 
-app.get('/', express.static(`${process.cwd()}/../build/index.html`));
+app.get('*', function(req, res){
+  res.sendfile(__dirname + '/../build/index.html');
+});
+// app.get('/', express.static(`${process.cwd()}/../build/index.html`));
 console.log(`${process.cwd()}/../build/index.html`)
 
 
