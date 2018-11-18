@@ -31,8 +31,9 @@ class App extends Component {
       callFrom: '',
       localSrc: null,
       peerSrc: null,
-
-
+      chargeDollar: 0,
+      qrCodePayment: '',
+      startTime: new Date(),
     };
     this.onMessageChange= this.onMessageChange.bind(this);
     this.addMessage= this.addMessage.bind(this);
@@ -129,21 +130,26 @@ class App extends Component {
   onSubmitPay(){
     const role = this.state.clientId.split('-')[0];
     if(role === 'patient'){
+      var self = this;
       const publicKeyPatient = keys[role];
       const publicKeyPhysician = keys['physician'];
       console.log("publicKeyPhysician", this.state)
+
       this.postData(apiUrl + 'api/TransactionHeaders', {
         "patientKey": publicKeyPatient,
         "physicianKey": publicKeyPhysician,
-        "timeElapsed": new Date() - this.state.startTime,
+        "timeElapsed": Math.round((new Date().getTime() - self.state.startTime.getTime()) / 1000),
         "transactionDate": new Date()
       })
-        .then(data =>{ console.log(JSON.stringify(data)); return JSON.stringify(data);})
+        .then(data =>{ console.log(JSON.stringify(data)); return data;})
         .then(data=> {
-          this.setState({showTimer: false})
+          console.log('get data', typeof(data));
+          self.setState({showTimer: false, qrCodePayment: data['qrCode'], chargeDollar: data['charges']})
+          console.log('data.qrCode', data['qrCode']);
         })
         .catch(error => {
-          this.setState({showTimer: false, showErrorMsg: true, errorMsg: 'We cannot process your payment. Please contact us'})
+          console.log(error)
+          self.setState({showTimer: false, showErrorMsg: true, errorMsg: 'We cannot process your payment. Please contact us'})
 
         });
 
@@ -215,19 +221,18 @@ class App extends Component {
              </Card>
              <Card className='card_c_'>
                 <Card.Content header={'Current Session'} />
-                {this.state.showTimer&& <Timer
-
-                />}
+                {this.state.showTimer&& <Timer/>}
 
 
                 {isPatient &&<Card.Content>
-                   <QRCode value={this.state.callFrom} />
-                   <Divider horizontal>Or</Divider>
+                    {this.state.chargeDollar > 0 && <p> $ {this.state.chargeDollar}</p>}
+                    {this.state.qrCodePayment && <QRCode value={this.state.qrCodePayment} />}
 
-                  <Button icon labelPosition='left'  color='green' onClick={this.onSubmitPay}>
-                    Pay Now
-                  <Icon name='money' />
-                  </Button>
+                    {!this.state.qrCodePayment &&<Button icon labelPosition='left'  color='green' onClick={this.onSubmitPay}>
+                      Pay Now
+                      <Icon name='money' />
+                    </Button>}
+
                 </Card.Content>
                 }
 
