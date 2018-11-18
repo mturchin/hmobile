@@ -22,6 +22,8 @@
 
 .video_Main {
   width: 100%;
+  height: 200px;
+  margin: 20px 0px;
 }
 
 .btn_span {
@@ -48,7 +50,11 @@
 }
 
 .txt_label {
-  padding-left: 5px;
+  margin-left: 5px !important;
+}
+
+.card_c_ {
+  margin: auto !important;
 }
 @keyframes App-logo-spin {
   from {

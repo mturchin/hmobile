@@ -83,7 +83,7 @@ class CallWindow extends Component {
             className="btn-action hangup fa fa-phone"
             onClick={() => this.props.endCall(true)}
           >
-          EndCall
+            End Call
           </Button>
         </div>
       </div>

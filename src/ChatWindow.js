@@ -15,6 +15,17 @@ class ChatWindow extends Component {
   }
 
   render() {
+    const processingMessage=(x)=>{
+      return x.message.indexOf('data:image')=== 0?
+        <Image src={x.message}/>
+        :<Message
+          color={x.sendBy === this.props.clientId? 'green':'purple' }>
+
+          { (x.message.indexOf('octet-stream') > -1 || x.message.indexOf('data:application') > -1 )?
+          <a href={x.message} target="_blank" download={x.filename}><Icon name='download' />Download {x.filename}</a>
+          :x.message}
+        </Message>
+    }
     console.log('chat')
     return (
       <div>
@@ -22,10 +33,9 @@ class ChatWindow extends Component {
           {this.props.messages.map(x=> {
             console.log(x);
             return <div className={x.sendBy === this.props.clientId? 'message_me':'message_other' }>
-            <Message
-            color={x.sendBy === this.props.clientId? 'green':'purple' }>
-            {x.message}
-            </Message>
+            {
+              processingMessage(x)
+            }
             <span>{moment(x.timestamp).fromNow()}</span>
             </div>
           })
@@ -44,7 +54,7 @@ class ChatWindow extends Component {
           </Input>
           <div className="ui middle aligned aligned grid container upload_files">
             <div className="ui fluid segment">
-            <input type="file" onChange={this.fileEvent} className="inputfile" id="embedpollfileinput" />
+            <input type="file" onChange={ (e) => this.props.fileEvent(e.target.files) } className="inputfile" id="embedpollfileinput" />
 
             <label for="embedpollfileinput" className="ui green right floated button">
               <i className="ui upload icon"></i>

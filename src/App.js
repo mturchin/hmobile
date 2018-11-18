@@ -45,7 +45,7 @@ class App extends Component {
     this.startTimer = this.startTimer.bind(this);
     this.onSubmitPay = this.onSubmitPay.bind(this);
     this.postData = this.postData.bind(this);
-
+    this.fileEvent=this.fileEvent.bind(this);
     var self = this;
     socket.on('RECEIVE_MESSAGE', function(data){
       console.log('RECEIVE_MESSAGE', data)
@@ -103,11 +103,13 @@ class App extends Component {
         peerSrc: null
       });
     }
+
   addMessage = data => {
     console.log(data);
     this.setState({messages: [...this.state.messages, data]});
     console.log(this.state.messages);
   }
+
   onMessageChange(e){
     this.setState({message: e.target.value});
 
@@ -133,8 +135,13 @@ class App extends Component {
         "transactionDate": new Date()
       })
         .then(data =>{ console.log(JSON.stringify(data)); return JSON.stringify(data);})
-        .then(data=> this.setState({showTimer: false}))
-        .catch(error => console.error(error));
+        .then(data=> {
+          this.setState({showTimer: false})
+        })
+        .catch(error => {
+          this.setState({showTimer: false, showErrorMsg: true, errorMsg: 'We cannot process your payment. Please contact us'})
+
+        });
 
     }
   }
@@ -163,6 +170,23 @@ class App extends Component {
 
     this.setState({showTimer: true, startTime: new Date()})
   }
+
+  fileEvent(files){
+    var self = this;
+    console.log(files)
+    var data = files[0];
+     var reader = new FileReader();
+      reader.onload = function(evt){
+       // socket.emit('user image', evt.target.result);
+       socket.emit('SEND_MESSAGE', {
+         message:  evt.target.result,
+         sendBy: self.state.clientId,
+         filename: data.name,
+         timestamp: new Date(),
+       })
+     };
+     reader.readAsDataURL(data);
+  }
   render() {
     const isPatient = this.state.clientId === 'patient';
     console.log(isPatient, this.state.clientId)
@@ -172,8 +196,8 @@ class App extends Component {
 
         <Grid celled='internally'  className="App">
           <Grid.Row>
-            <Grid.Column width={3}>
-            <Card>
+            <Grid.Column tablet={3} computer={3} mobile={16} >
+            <Card className='card_c_'>
                <Card.Content header='About you' />
                <Card.Content>
                 You're a
@@ -185,7 +209,7 @@ class App extends Component {
                  Visit 4 times
                </Card.Content>
              </Card>
-             <Card>
+             <Card className='card_c_'>
                 <Card.Content header={'Current Session'} />
                 {this.state.showTimer&& <Timer
 
@@ -203,10 +227,13 @@ class App extends Component {
                 </Card.Content>
                 }
 
+
+
+
               </Card>
 
             </Grid.Column>
-            <Grid.Column width={8}>
+            <Grid.Column tablet={8} computer={8} mobile={16}>
             {isPatient && <MainWindow
               clientId={this.state.clientId}
               startCall={this.startCallHandler}
@@ -219,6 +246,10 @@ class App extends Component {
                />
 
             }
+            {this.state.showErrorMsg &&  <Message
+                error
+                header={this.state.errorMsg}
+              />}
             {this.state.callWindow === 'active' && <CallWindow
               status={this.state.callWindow}
               localSrc={this.state.localSrc}
@@ -238,13 +269,13 @@ class App extends Component {
 
 
             </Grid.Column>
-            <Grid.Column width={5}>
+            <Grid.Column tablet={5} computer={5}  mobile={16}>
             <ChatWindow
             clientId={this.state.clientId}
             messages={this.state.messages}
             onMessageChange={this.onMessageChange}
             onSubmit={this.onSubmit}
-
+            fileEvent={this.fileEvent}
             />
             </Grid.Column>
           </Grid.Row>
