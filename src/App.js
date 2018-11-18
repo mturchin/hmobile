@@ -8,18 +8,21 @@ import PeerConnection from './PeerConnection';
 import MainWindow from './MainWindow';
 import CallWindow from './CallWindow';
 import CallModal from './CallModal';
-import { Label, Message, Card, Input, Button, Icon, Grid, Image } from 'semantic-ui-react'
+import Timer from './Timer';
+import ChatWindow from './ChatWindow';
+
+import { Divider, Label, Message, Card, Input, Button, Icon, Grid, Image } from 'semantic-ui-react'
 var QRCode = require('qrcode.react');
 
-function subscribeToTimer(cb) {
-  socket.on('timer', timestamp => cb(null, timestamp));
-  socket.emit('subscribeToTimer', 1000);
-}
+// patient & physician
+var keys = {patient: '0x8Bc8f2CA3d78fe01A7E4bfb118761c751438b854', physician: '0x8Bc8f2CA3d78fe01A7E4bfb118761c751438b854'}
+const apiUrl = `https://healthmarketplaceapi20181117074811.azurewebsites.net/`;
+
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      timestamp: 'no timestamp yet',
       message:'here',
       messages: [],
       clientId: '',
@@ -28,12 +31,7 @@ class App extends Component {
       callFrom: '',
       localSrc: null,
       peerSrc: null,
-      seconds:0,
-      mins:0,
-      hours: 0,
-      secondsUI: '00',
-      minsUI:'00:',
-      hoursUI: '00:',
+
 
     };
     this.onMessageChange= this.onMessageChange.bind(this);
@@ -45,12 +43,14 @@ class App extends Component {
     this.endCallHandler = this.endCall.bind(this);
     this.rejectCallHandler = this.rejectCall.bind(this);
     this.startTimer = this.startTimer.bind(this);
+    this.onSubmitPay = this.onSubmitPay.bind(this);
+    this.postData = this.postData.bind(this);
 
     var self = this;
     socket.on('RECEIVE_MESSAGE', function(data){
       console.log('RECEIVE_MESSAGE', data)
       self.addMessage(data);
-      if(!this.timex){
+      if(!self.state.showTimer){
         self.startTimer();
       }
     })
@@ -61,14 +61,18 @@ class App extends Component {
           this.pc.setRemoteDescription(data.sdp);
           if (data.sdp.type === 'offer') this.pc.createAnswer();
         } else this.pc.addIceCandidate(data.candidate);
+
+        if(!self.state.showTimer){
+          self.startTimer();
+        }
       })
       .on('end', this.endCall.bind(this, false))
       .emit('init');
   }
   componentDidMount() {
-    subscribeToTimer((err, timestamp) => this.setState({
-       timestamp
-     }));
+    // subscribeToTimer((err, timestamp) => this.setState({
+    //    timestamp
+    //  }));
   }
 
 
@@ -109,9 +113,7 @@ class App extends Component {
 
   }
   onSubmit(){
-    if(!this.timex){
-      this.startTimer();
-    }
+
     socket.emit('SEND_MESSAGE', {
       message:  this.state.message,
       sendBy: this.state.clientId,
@@ -119,44 +121,51 @@ class App extends Component {
     })
   }
 
-  startTimer(){
-    var self = this;
-    this.timex = setTimeout(function(){
-      var seconds =  self.state.seconds;
-      var mins =  self.state.mins;
-      var hours =  self.state.hours;
-      seconds++
-      if(seconds > 59){
-          seconds=0;
-          mins++;
-         if(mins>59) {
-           mins=0;
-           hours++;
-           if(hours <10) {
-             self.setState({hoursUI: hours+':'})
-         }
-       }
 
-      if(mins<10){
-        self.setState({minsUI:'0' + mins+':'})
+  onSubmitPay(){
+    if(this.state.clientId === 'patient'){
+      const publicKeyPatient = keys[this.state.clientId];
+      const publicKeyphysician = keys[this.state.callFrom];
+      this.postData(apiUrl + 'api/TransactionHeaders', {
+        "physicianKey": publicKeyphysician,
+        "patientKey": publicKeyPatient,
+        "timeElapsed": new Date() - this.state.startTime,
+        "transactionDate": new Date()
+      })
+        .then(data =>{ console.log(JSON.stringify(data)); return JSON.stringify(data);})
+        .then(data=> this.setState({showTimer: false}))
+        .catch(error => console.error(error));
 
-      }else {
-         self.setState({minsUI: mins+':'})
-
-       };
-     }
-      if(seconds <10) {
-        self.setState({secondsUI: '0' + seconds})
-      }else {
-        self.setState({secondsUI: seconds })
-      }
-      self.setState({seconds, mins, hours })
-      console.log("hours", hours, "mins", mins, "seconds", seconds)
-      self.startTimer();
-    },1000);
+    }
   }
 
+
+  postData(url = ``, data = {}) {
+    // Default options are marked with *
+      return fetch(url, {
+          method: "POST", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, cors, *same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              // "Content-Type": "application/x-www-form-urlencoded",
+          },
+          redirect: "follow", // manual, *follow, error
+          referrer: "no-referrer", // no-referrer, *client
+          body: JSON.stringify(data), // body data type must match "Content-Type" header
+      })
+      .then(response => response.json()); // parses response to JSON
+  }
+
+  startTimer(){
+    console.log("showTimer")
+
+    this.setState({showTimer: true, startTime: new Date()})
+  }
   render() {
+    const isPatient = this.state.clientId === 'patient';
+    console.log(isPatient, this.state.clientId)
     return (
       <div className="App">
         <div  className="App">
@@ -167,7 +176,7 @@ class App extends Component {
             <Card>
                <Card.Content header='About you' />
                <Card.Content>
-               Your caller Id is
+                You're a
                 <Label as='a'>{this.state.clientId}</Label>
 
                </Card.Content>
@@ -178,30 +187,38 @@ class App extends Component {
              </Card>
              <Card>
                 <Card.Content header={'Current Session'} />
-                <Card.Content>
-                  <Icon name='clock outline' />
-                  <div id="timer">
-                    <span id="hours">{this.state.hoursUI}</span>
-                    <span id="mins">{this.state.minsUI}</span>
-                    <span id="seconds">{this.state.secondsUI}</span>
-                  </div>
-                </Card.Content>
-                <Card.Content>
-                  {this.state.callFrom && <QRCode value={this.state.callFrom} />}
-                  <Button icon labelPosition='left'  color='green'>
+                {this.state.showTimer&& <Timer
+
+                />}
+
+
+                {isPatient &&<Card.Content>
+                   <QRCode value={this.state.callFrom} />
+                   <Divider horizontal>Or</Divider>
+
+                  <Button icon labelPosition='left'  color='green' onClick={this.onSubmitPay}>
                     Pay Now
                   <Icon name='money' />
                   </Button>
                 </Card.Content>
+                }
 
               </Card>
 
             </Grid.Column>
             <Grid.Column width={8}>
-            <MainWindow
+            {isPatient && <MainWindow
               clientId={this.state.clientId}
               startCall={this.startCallHandler}
-            />
+            />}
+            {!this.state.callFrom && !isPatient &&
+              <Message
+                 success
+                 header="You don't have a patient right now. Please wait."
+                 content='We will show the prompt as soon as we found the match'
+               />
+
+            }
             {this.state.callWindow === 'active' && <CallWindow
               status={this.state.callWindow}
               localSrc={this.state.localSrc}
@@ -222,34 +239,13 @@ class App extends Component {
 
             </Grid.Column>
             <Grid.Column width={5}>
-            <div>
-              <div className='chat_history'>
-                {this.state.messages.map(x=> {
-                  console.log(x);
-                  return <div className={x.sendBy === this.state.clientId? 'message_me':'message_other' }>
-                  <Message
-                  color={x.sendBy === this.state.clientId? 'green':'purple' }>
-                  {x.message}
-                  </Message>
-                  <span>{moment(x.timestamp).fromNow()}</span></div>
-                })
-                }
-              </div>
-              <div>
-                <Input type='text' placeholder='...' action>
-                  <input onChange={this.onMessageChange}/>
+            <ChatWindow
+            clientId={this.state.clientId}
+            messages={this.state.messages}
+            onMessageChange={this.onMessageChange}
+            onSubmit={this.onSubmit}
 
-                  <Button color='facebook' type='submit'  onClick={this.onSubmit}>
-                  <Icon name='rocketchat' />
-
-                  Chat
-                </Button>
-
-                </Input>
-                <div>{this.state.timestamp}</div>
-              </div>
-            </div>
-
+            />
             </Grid.Column>
           </Grid.Row>
 

@@ -3,7 +3,6 @@
 const express = require('express');
 const { createServer } = require('http');
 const io = require('socket.io');
-const haiku = require('./haiku');
 
 const app = express();
 const server = createServer(app);
@@ -21,13 +20,22 @@ app.get('*', function(req, res){
 // app.get('/', express.static(`${process.cwd()}/../build/index.html`));
 console.log(`${process.cwd()}/build/index.html`)
 
-/**
- * Random ID until the ID is not in use
- */
+
+
+
+var keys = ['patient', 'physician']
+var lastOne = '';
+// const MIN = 1000;
+// const MAX = 9999;
+
 function randomID(callback) {
-  const id = haiku();
-  if (id in userIds) setTimeout(() => haiku(callback), 5);
-  else callback(id);
+  console.log('userIds', userIds)
+  const num = Math.round(Math.random());
+
+  var id = keys[num];
+  if (lastOne === id ) id = keys[num===0?1:0];
+  lastOne=id;
+  callback(id);
 }
 
 /**

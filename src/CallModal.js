@@ -15,6 +15,7 @@ class CallModal extends Component {
           <span className="caller">{this.props.callFrom}</span> is calling ...
         </p>
         <Button
+          basic color='green'
           className="btn-action fa fa-video-camera"
           onClick={this.acceptWithVideo(true)}
         >
@@ -23,15 +24,7 @@ class CallModal extends Component {
           <Icon name='microphone' />
           <Icon name='camera' />
         </Button>
-        <Button
-          basic color='green'
-          className="btn-action fa fa-phone"
-          onClick={this.acceptWithVideo(false)}
-          >
-          Accept Call
-          <span className="btn_span"></span>
-          <Icon name='microphone' />
-        </Button>
+
 
         <Button
           basic color='violet'
@@ -47,3 +40,13 @@ class CallModal extends Component {
 }
 
 export default CallModal;
+//
+// <Button
+//   basic color='green'
+//   className="btn-action fa fa-phone"
+//   onClick={this.acceptWithVideo(false)}
+//   >
+//   Accept Call
+//   <span className="btn_span"></span>
+//   <Icon name='microphone' />
+// </Button>

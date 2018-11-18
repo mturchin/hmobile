@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Input, Button, Icon } from 'semantic-ui-react'
 
-let friendID;
+let friendID = 'physician';
 
 class MainWindow extends Component {
 
@@ -20,28 +20,23 @@ class MainWindow extends Component {
           <h4>Get started by calling a friend below</h4>
         </div>
         <div>
-          <Input placeholder='Your friend ID'
+          <Input placeholder='Who are you looking for'
+          value={friendID}
           onChange={event => friendID = event.target.value}
           />
 
           <div>
             <Button
+              basic color='green'
               className="btn-action fa fa-video-camera"
               onClick={this.callWithVideo(true)}
-            >
-            Call
-              <span className="btn_span"></span>
-              <Icon name='microphone' />
-              <Icon name='camera' />
-            </Button>
-            <Button
-              className="btn-action fa fa-phone"
-              onClick={this.callWithVideo(false)}
             >
               Call
               <span className="btn_span"></span>
               <Icon name='microphone' />
+              <Icon name='camera' />
             </Button>
+
           </div>
         </div>
       </div>
@@ -50,3 +45,13 @@ class MainWindow extends Component {
 }
 
 export default MainWindow;
+
+//
+// <Button
+//   className="btn-action fa fa-phone"
+//   onClick={this.callWithVideo(false)}
+// >
+//   Call
+//   <span className="btn_span"></span>
+//   <Icon name='camera' />
+// </Button>

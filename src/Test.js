@@ -68,6 +68,8 @@ class Test extends Component {
   }
 
   render() {
+    console.log('Test')
+
     return (
       <div >
         <MainWindow
