@@ -208,7 +208,7 @@ class App extends Component {
                </Card.Content>
                <Card.Content extra>
                  <Icon name='user' />
-                 Visit 4 times
+                 Visit {Math.round(Math.random() * 100)} times
                </Card.Content>
              </Card>
              <Card className='card_c_'>
