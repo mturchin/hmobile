@@ -21,7 +21,7 @@ class ChatWindow extends Component {
         :<Message
           color={x.sendBy === this.props.clientId? 'green':'orange' }>
 
-          { (x.message.indexOf('octet-stream') > -1 || x.message.indexOf('data:application') > -1 )?
+          { (x.message.indexOf('text/csv') > -1 || x.message.indexOf('octet-stream') > -1 || x.message.indexOf('data:application') > -1 )?
           <a href={x.message} target="_blank" download={x.filename}><Icon name='download' /> {x.filename}</a>
           :x.message}
         </Message>
