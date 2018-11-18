@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import socket from './socket';
 import _ from 'lodash';
+import moment from 'moment'
+import logo from './logo.svg';
 import PeerConnection from './PeerConnection';
 import MainWindow from './MainWindow';
 import CallWindow from './CallWindow';
 import CallModal from './CallModal';
 import { Label, Message, Card, Input, Button, Icon, Grid, Image } from 'semantic-ui-react'
+var QRCode = require('qrcode.react');
 
 function subscribeToTimer(cb) {
   socket.on('timer', timestamp => cb(null, timestamp));
@@ -48,6 +50,9 @@ class App extends Component {
     socket.on('RECEIVE_MESSAGE', function(data){
       console.log('RECEIVE_MESSAGE', data)
       self.addMessage(data);
+      if(!this.timex){
+        self.startTimer();
+      }
     })
       .on('init', data => this.setState({ clientId: data.id }))
       .on('request', data => this.setState({ callModal: 'active', callFrom: data.from }))
@@ -104,10 +109,13 @@ class App extends Component {
 
   }
   onSubmit(){
-    this.startTimer();
+    if(!this.timex){
+      this.startTimer();
+    }
     socket.emit('SEND_MESSAGE', {
       message:  this.state.message,
-      sendBy: this.state.clientId
+      sendBy: this.state.clientId,
+      timestamp: new Date(),
     })
   }
 
@@ -178,6 +186,14 @@ class App extends Component {
                     <span id="seconds">{this.state.secondsUI}</span>
                   </div>
                 </Card.Content>
+                <Card.Content>
+                  {this.state.callFrom && <QRCode value={this.state.callFrom} />}
+                  <Button icon labelPosition='left'  color='green'>
+                    Pay Now
+                  <Icon name='money' />
+                  </Button>
+                </Card.Content>
+
               </Card>
 
             </Grid.Column>
@@ -210,11 +226,13 @@ class App extends Component {
               <div className='chat_history'>
                 {this.state.messages.map(x=> {
                   console.log(x);
-                  return <Message
-                  color={x.sendBy === this.state.clientId? 'green':'purple' }
-                  className={x.sendBy === this.state.clientId? 'message_me':'message_other' }>
+                  return <div className={x.sendBy === this.state.clientId? 'message_me':'message_other' }>
+                  <Message
+                  color={x.sendBy === this.state.clientId? 'green':'purple' }>
                   {x.message}
-                  </Message>})
+                  </Message>
+                  <span>{moment(x.timestamp).fromNow()}</span></div>
+                })
                 }
               </div>
               <div>
