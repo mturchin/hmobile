@@ -32,11 +32,12 @@ function randomID(callback) {
   console.log('userIds', userIds)
   const num = Math.round(Math.random());
   const numK = Math.floor(Math.random() * ((MAX + 1) - MIN)) + MIN;
+  const numM = Math.floor(Math.random() * ((MAX + 1) - MIN)) + MIN;
 
   var id = keys[num];
   if (lastOne === id ) id = keys[num===0?1:0];
   lastOne=id;
-  callback(id+'-'+numK);
+  callback(id+'-'+numK+'-'+numM);
 }
 
 /**
