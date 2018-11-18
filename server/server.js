@@ -9,7 +9,6 @@ const server = createServer(app);
 var cors = require('cors')
 
 app.use(cors())
-io.set('origins', '*:*');
 
 
 app.get('/', express.static(`${process.cwd()}/../build/index.html`));
@@ -25,7 +24,7 @@ app.get('/test', (req, res) => {
 module.exports.run = (config) => {
   server.listen(config.PORT);
   console.log(`Server is listening at :${config.PORT}`);
-  io.listen(server, { log: true })
+  io.listen(server, { log: true,  origins: '*:*' })
     .on('connection', (client) => {
       client.on('subscribeToTimer', (interval) => {
         console.log('client is subscribing to timer with interval ', interval);
