@@ -25,17 +25,18 @@ console.log(`${process.cwd()}/build/index.html`)
 
 var keys = ['patient', 'physician']
 var lastOne = '';
-// const MIN = 1000;
-// const MAX = 9999;
+const MIN = 1000;
+const MAX = 9999;
 
 function randomID(callback) {
   console.log('userIds', userIds)
   const num = Math.round(Math.random());
+  const numK = Math.floor(Math.random() * ((MAX + 1) - MIN)) + MIN;
 
   var id = keys[num];
   if (lastOne === id ) id = keys[num===0?1:0];
   lastOne=id;
-  callback(id);
+  callback(id+'-'+numK);
 }
 
 /**

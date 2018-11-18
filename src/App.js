@@ -127,12 +127,14 @@ class App extends Component {
 
 
   onSubmitPay(){
-    if(this.state.clientId === 'patient'){
-      const publicKeyPatient = keys[this.state.clientId];
-      const publicKeyphysician = keys[this.state.callFrom];
+    const role = this.state.clientId.split('-')[0];
+    if(role === 'patient'){
+      const publicKeyPatient = keys[role];
+      const publicKeyPhysician = keys['physician'];
+      console.log("publicKeyPhysician", this.state)
       this.postData(apiUrl + 'api/TransactionHeaders', {
-        "physicianKey": publicKeyphysician,
         "patientKey": publicKeyPatient,
+        "physicianKey": publicKeyPhysician,
         "timeElapsed": new Date() - this.state.startTime,
         "transactionDate": new Date()
       })
@@ -190,7 +192,7 @@ class App extends Component {
      reader.readAsDataURL(data);
   }
   render() {
-    const isPatient = this.state.clientId === 'patient';
+    const isPatient = this.state.clientId.split('-')[0] === 'patient';
     console.log(isPatient, this.state.clientId)
     return (
       <div className="App">
