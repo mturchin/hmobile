@@ -9,7 +9,7 @@ const server = createServer(app);
 var cors = require('cors')
 
 app.use(cors())
-
+io.set('origins', '*:*');
 
 
 app.get('/', express.static(`${process.cwd()}/../build/index.html`));
