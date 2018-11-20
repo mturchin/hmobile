@@ -44,3 +44,5 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## TESTING CLONE 123
+
+The cloned repo is syncing just fine. 
