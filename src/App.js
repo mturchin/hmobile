@@ -15,7 +15,7 @@ import { Divider, Label, Message, Card, Input, Button, Icon, Grid, Image } from 
 var QRCode = require('qrcode.react');
 
 // patient & physician
-var keys = {patient: '0x8Bc8f2CA3d78fe01A7E4bfb118761c751438b854', physician: '0x8Bc8f2CA3d78fe01A7E4bfb118761c751438b854'}
+var keys = {patient: '0xBEDa8BE440d4afae4c4E28469fABd24a20e1b747', physician: '0x66E437D3FB414Ca912678c7Ef49C7EDB6347cfdD'}
 const apiUrl = `https://healthmarketplaceapi20181117074811.azurewebsites.net/`;
 
 
